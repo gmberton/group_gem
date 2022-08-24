@@ -29,7 +29,7 @@ logging.info(f"Arguments: {args}")
 logging.info(f"The outputs are being saved in {output_folder}")
 
 #### Model
-model = network.GeoLocalizationNet(args.backbone, args.fc_output_dim)
+model = network.GeoLocalizationNet(args.backbone, args.fc_output_dim, args.pooling)
 
 logging.info(f"There are {torch.cuda.device_count()} GPUs and {multiprocessing.cpu_count()} CPUs.")
 
@@ -93,7 +93,20 @@ if args.augmentation_device == "cuda":
 if args.use_amp16:
     scaler = torch.cuda.amp.GradScaler()
 
+# TEST_DATASETS = ["pitts250k", "pitts30k", "tokyo247", "msls", "st_lucia"] # TODO TOREMOVE
+TEST_DATASETS = ["pitts30k", "tokyo247", "st_lucia"] # TODO TOREMOVE
+
 for epoch_num in range(start_epoch_num, args.epochs_num):
+    
+    if epoch_num % 10 == 0: # TODO TOREMOVE
+        for dataset_name in TEST_DATASETS:
+            try:
+                test_ds = TestDataset(f"/media/vid1/datasets/{dataset_name}/images/test", queries_folder="queries",
+                                      positive_dist_threshold=args.positive_dist_threshold)
+                recalls, recalls_str = test.test(args, test_ds, model)
+                logging.info(f"{test_ds}: {recalls_str}")
+            except Exception as e:
+                logging.info(f"{dataset_name} with exception {e}")
     
     #### Train
     epoch_start_time = datetime.now()

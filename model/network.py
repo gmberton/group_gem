@@ -4,7 +4,7 @@ import logging
 import torchvision
 from torch import nn
 
-from model.layers import Flatten, L2Norm, GeM
+from model.layers import Flatten, L2Norm, GeM, MultiGeM, FastMultiGeM
 
 
 CHANNELS_NUM_IN_LAST_CONV = {
@@ -17,17 +17,34 @@ CHANNELS_NUM_IN_LAST_CONV = {
 
 
 class GeoLocalizationNet(nn.Module):
-    def __init__(self, backbone, fc_output_dim):
+    def __init__(self, backbone, fc_output_dim, pooling="gem"):
         super().__init__()
         self.backbone, features_dim = get_backbone(backbone)
-        self.aggregation = nn.Sequential(
-                L2Norm(),
-                GeM(),
-                Flatten(),
-                nn.Linear(features_dim, fc_output_dim),
-                L2Norm()
-            )
-    
+        if pooling == "gem":
+            self.aggregation = nn.Sequential(
+                    L2Norm(),
+                    GeM(),
+                    Flatten(),
+                    nn.Linear(features_dim, fc_output_dim),
+                    L2Norm()
+                )
+        elif pooling == "multigem":
+            self.aggregation = nn.Sequential(
+                    L2Norm(),
+                    MultiGeM(features_dim),
+                    Flatten(),
+                    nn.Linear(features_dim, fc_output_dim),
+                    L2Norm()
+                )
+        elif pooling == "fastmultigem":
+            self.aggregation = nn.Sequential(
+                    L2Norm(),
+                    FastMultiGeM(features_dim),
+                    Flatten(),
+                    nn.Linear(features_dim, fc_output_dim),
+                    L2Norm()
+                )
+        
     def forward(self, x):
         x = self.backbone(x)
         x = self.aggregation(x)

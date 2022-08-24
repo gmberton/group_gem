@@ -13,6 +13,8 @@ def parse_arguments(is_training=True):
     parser.add_argument("--groups_num", type=int, default=8, help="_")
     parser.add_argument("--min_images_per_class", type=int, default=10, help="_")
     # Model parameters
+    parser.add_argument("--pooling", type=str, default="gem",
+                        choices=["gem", "multigem", "fastmultigem"], help="_")
     parser.add_argument("--backbone", type=str, default="resnet18",
                         choices=["vgg16", "resnet18", "resnet50", "resnet101", "resnet152"], help="_")
     parser.add_argument("--fc_output_dim", type=int, default=512,
