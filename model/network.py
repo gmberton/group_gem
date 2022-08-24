@@ -4,7 +4,7 @@ import logging
 import torchvision
 from torch import nn
 
-from model.layers import Flatten, L2Norm, GeM, MultiGeM, FastMultiGeM
+from model.layers import Flatten, L2Norm, GeM, GroupGeM, FastGroupGeM
 
 
 CHANNELS_NUM_IN_LAST_CONV = {
@@ -28,18 +28,18 @@ class GeoLocalizationNet(nn.Module):
                     nn.Linear(features_dim, fc_output_dim),
                     L2Norm()
                 )
-        elif pooling == "multigem":
+        elif pooling == "groupgem":
             self.aggregation = nn.Sequential(
                     L2Norm(),
-                    MultiGeM(features_dim),
+                    GroupGeM(features_dim),
                     Flatten(),
                     nn.Linear(features_dim, fc_output_dim),
                     L2Norm()
                 )
-        elif pooling == "fastmultigem":
+        elif pooling == "fastgroupgem":
             self.aggregation = nn.Sequential(
                     L2Norm(),
-                    FastMultiGeM(features_dim),
+                    FastGroupGeM(features_dim),
                     Flatten(),
                     nn.Linear(features_dim, fc_output_dim),
                     L2Norm()

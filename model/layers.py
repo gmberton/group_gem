@@ -22,7 +22,7 @@ class GeM(nn.Module):
         return self.__class__.__name__ + '(' + 'p=' + '{:.4f}'.format(self.p.data.tolist()[0]) + ', ' + 'eps=' + str(self.eps) + ')'
 
 
-class MultiGeM(nn.Module):
+class GroupGeM(nn.Module):
     def __init__(self, num_channels, p=3, eps=1e-6):
         super().__init__()
         self.num_channels = num_channels
@@ -40,7 +40,7 @@ class MultiGeM(nn.Module):
         return out
 
 
-class FastMultiGeM(nn.Module):
+class FastGroupGeM(nn.Module):
     def __init__(self, num_channels, p=3, eps=1e-6):
         super().__init__()
         self.num_channels = num_channels
