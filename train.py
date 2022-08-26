@@ -102,10 +102,10 @@ for epoch_num in range(start_epoch_num, args.epochs_num):
         for dataset_name in TEST_DATASETS:
             try:
                 all_datasets_path = args.test_set_folder.replace("/sf_xl/processed/test", "")
-                test_ds = TestDataset(f"{all_datasets_path}/{dataset_name}/images/test", queries_folder="queries",
+                tmp_test_ds = TestDataset(f"{all_datasets_path}/{dataset_name}/images/test", queries_folder="queries",
                                       positive_dist_threshold=args.positive_dist_threshold)
-                recalls, recalls_str = test.test(args, test_ds, model)
-                logging.info(f"{test_ds}: {recalls_str}")
+                recalls, recalls_str = test.test(args, tmp_test_ds, model)
+                logging.info(f"{tmp_test_ds}: {recalls_str}")
             except Exception as e:
                 logging.info(f"{dataset_name} with exception {e}")
     
