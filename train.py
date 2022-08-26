@@ -98,7 +98,7 @@ TEST_DATASETS = ["pitts30k", "tokyo247", "st_lucia"] # TODO TOREMOVE
 
 for epoch_num in range(start_epoch_num, args.epochs_num):
     
-    if epoch_num % 10 == 0: # TODO TOREMOVE
+    if epoch_num % 10 == 0 or epoch_num == args.epochs_num-1: # TODO TOREMOVE
         for dataset_name in TEST_DATASETS:
             try:
                 all_datasets_path = args.test_set_folder.replace("/sf_xl/processed/test", "")
