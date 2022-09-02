@@ -42,7 +42,10 @@ model = model.to(args.device).train()
 
 #### Optimizer
 criterion = torch.nn.CrossEntropyLoss()
-model_optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+# model_optimizer = torch.optim.Adam(model.parameters())
+
+model_optimizer = torch.optim.Adam([{'params': [p for n, p in model.named_parameters() if n != "aggregation.1.params"], 'lr': args.lr},
+                                    {'params': [p for n, p in model.named_parameters() if n == "aggregation.1.params"], 'lr': args.lr*10}])
 
 #### Datasets
 groups = [TrainDataset(args, args.train_set_folder, M=args.M, alpha=args.alpha, N=args.N, L=args.L,
